@@ -30,7 +30,9 @@ module Fluent
       val.split(',')
     end
 
-    config_param :blocking_timeout, :time, :default => 0.5
+    config_param :blocking_timeout, :time,    :default => 0.5
+    config_param :max_send_queue,   :integer, :default => 100
+    config_param :send_interval,    :time,    :default => 2
 
     COMMAND_MAP = {
       'priv_msg' => :priv_msg,
@@ -42,6 +44,8 @@ module Fluent
     unless method_defined?(:log)
       define_method("log") { $log }
     end
+
+    attr_reader :conn # for test
 
     def initialize
       super
@@ -77,6 +81,8 @@ module Fluent
           raise Fluent::ConfigError, "command must be one of #{COMMAND_MAP.keys.join(', ')}"
         end
       end
+
+      @send_queue = []
     end
 
     def start
@@ -85,6 +91,8 @@ module Fluent
       begin
         @loop = Coolio::Loop.new
         @conn = create_connection
+        @timer = TimerWatcher.new(@send_interval, true, log, &method(:on_timer))
+        @loop.attach(@timer)
         @thread = Thread.new(&method(:run))
       rescue => e
         puts e
@@ -116,9 +124,23 @@ module Fluent
       end
 
       es.each do |time,record|
+        if @send_queue.size >= @max_send_queue
+          log.warn "out_irc: send queue size exceeded max_send_queue(#{@max_send_queue}), discards"
+          break
+        end
+
         filter_record(tag, time, record)
-        @conn.send_message(build_message(record), build_channel(record), build_command(record))
+        command, channel, message = build_command(record), build_channel(record), build_message(record)
+        log.debug { "out_irc: push {command:\"#{command}\", channel:\"#{channel}\", message:\"#{message}\"}" }
+        @send_queue.push([command, channel, message])
       end
+    end
+
+    def on_timer
+      return if @send_queue.empty?
+      command, channel, message = @send_queue.shift
+      log.info { "out_irc: send {command:\"#{command}\", channel:\"#{channel}\", message:\"#{message}\"}" }
+      @conn.send_message(command, channel, message)
     end
 
     private
@@ -167,7 +189,23 @@ module Fluent
       end
     end
 
+    class TimerWatcher < Coolio::TimerWatcher
+      def initialize(interval, repeat, log, &callback)
+        @callback = callback
+        @log = log
+        super(interval, repeat)
+      end
+
+      def on_timer
+        @callback.call
+      rescue
+        @log.error $!.to_s
+        @log.error_backtrace
+      end
+    end
+
     class IRCConnection < Cool.io::TCPSocket
+      attr_reader :joined # for test
       attr_accessor :log, :nick, :user, :real, :password
 
       def initialize(*args)
@@ -197,6 +235,7 @@ module Fluent
         data.each_line do |line|
           begin
             msg = IRCParser.parse(line)
+            log.debug { "out_irc: on_read :#{msg.class.to_sym}" }
             case msg.class.to_sym
             when :ping
               IRCParser.message(:pong) do |m|
@@ -204,6 +243,9 @@ module Fluent
                 m.body = msg.body
                 write m
               end
+            when :join
+              log.info { "out_irc: joined to #{msg.channels.join(', ')}" }
+              msg.channels.each {|channel| @joined[channel] = true }
             when :err_nick_name_in_use
               log.warn "out_irc: nickname \"#{msg.error_nick}\" is already in use."
             when :error
@@ -224,16 +266,17 @@ module Fluent
           m.channels = channel
           write m
         end
-        @joined[channel] = true
+        log.debug { "out_irc: join to #{channel}" }
       end
 
-      def send_message(msg, channel, command)
+      def send_message(command, channel, message)
         join(channel) unless joined?(channel)
         IRCParser.message(command) do |m|
           m.target = channel
-          m.body = msg
+          m.body = message
           write m
         end
+        channel # return channel for test
       end
     end
   end
