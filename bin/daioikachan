@@ -31,7 +31,8 @@ opt.on('-g', "--generate PATH", "generate a sample configuration file") {|s|
 begin
   opt.parse!(ARGV)
 rescue OptionParser::InvalidOption => e
-  ARGV = e.args + ARGV # restore and ignore unknown options to pass to Fluentd
+  argv = ARGV # suppress warning to constant
+  argv.unshift(*(e.args)) # restore and ignore unknown options to pass to Fluentd
 end
 
 if generate_path = opts[:generate_path]
