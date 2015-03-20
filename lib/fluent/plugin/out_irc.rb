@@ -204,6 +204,8 @@ module Fluent
                 m.body = msg.body
                 write m
               end
+            when :err_nick_name_in_use
+              log.warn "out_irc: nickname \"#{msg.error_nick}\" is already in use."
             when :error
               log.warn "out_irc: an error occured. \"#{msg.error_message}\""
             end
