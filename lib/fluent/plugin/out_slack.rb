@@ -61,6 +61,8 @@ module Fluent
         @message_keys ||= %w[message]
         @slack = Fluent::SlackClient::WebApi.new
       end
+      @slack.log = log
+      @slack.debug_dev = log.out if log.level <= Fluent::Log::LEVEL_TRACE
 
       begin
         @message % (['1'] * @message_keys.length)

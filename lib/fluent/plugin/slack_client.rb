@@ -7,6 +7,8 @@ module Fluent
 
     # This slack client only supports posting message
     class Base
+      attr_accessor :log, :debug_dev
+
       DEFAULT_ENDPOINT = "https://slack.com/api/chat.postMessage"
 
       def initialize(endpoint = nil)
@@ -47,6 +49,7 @@ module Fluent
         http = Net::HTTP.new(endpoint.host, endpoint.port)
         http.use_ssl = (endpoint.scheme == 'https')
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http.set_debug_output(debug_dev) if debug_dev
 
         req = Net::HTTP::Post.new(endpoint.path)
         req['Host'] = endpoint.host
@@ -54,6 +57,7 @@ module Fluent
         req['User-Agent'] = 'fluent-plugin-slack'
         req.body = encode_body(params)
 
+        log.info { "out_slack: post #{params.dup.tap {|p| p[:token] = '[FILTERED]' if p[:token] }}" }
         res = http.request(req)
         response_check(res)
       end
