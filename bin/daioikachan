@@ -42,7 +42,7 @@ if generate_path = opts[:generate_path]
     puts "#{generate_path} already exists."
   else
     File.open(generate_path, "w") {|f|
-      conf = File.read File.join(ROOT, 'daioikachan.conf')
+      conf = File.read File.join(ROOT, 'examples/example.conf')
       f.write conf
     }
     puts "Installed #{generate_path}."

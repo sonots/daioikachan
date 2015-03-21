@@ -32,7 +32,7 @@ This is an example to post messages for both IRC and Slack.
 
 ### Start
 
-Generate a sample `daioikachan.conf`:
+Generate a sample [daioikachan.conf](./examples/example.conf):
 
 ```
 $ bundle exec daioikachan -g daioikachan.conf
@@ -53,17 +53,17 @@ $ bundle exec daioikachan
 
 ### Test
 
-Test to post a message to `daioikachan` like:
+Test to post a message to `#daioikachan` channel of both IRC and Slack via `daioikachan` like:
 
 ```
-$ curl -d "channel=#channel&message=test message" http://localhost:4979/notice
+$ curl -d "channel=#daioikachan&message=test daioikachan" http://localhost:4979/notice
 ```
 
 Look whether posting to IRC, and Slack succeeds.
 
 ## Configuration
 
-See [examples](./examples) directory.
+See [example.conf](./example.conf) or [multi_slack.conf](./examples/multi_slack.conf) as examples.
 
 You might've noticed that the config file is similar with Fluentd.
 Yes, `daioikachan` is created based on Fluentd.
@@ -73,9 +73,9 @@ See [config-file](http://docs.fluentd.org/articles/config-file) documentation of
 
 See following pages for built-in plugins.
 
-* [fluent-pluign-daioikachan](https://github.com/sonots/fluent-plugin-daioikachan)
-* [fluent-plugin-irc](https://github.com/choplin/fluent-plugin-irc)
-* [fluent-plugin-slack](https://github.com/sowawa/fluent-plugin-slack)
+* [fluent-pluign-daioikachan](./README/in_daioikachan.md)
+* [fluent-plugin-irc](./README/out_irc.md)
+* [fluent-plugin-slack](./README/out_slack.md)
 
 If you need other backends, search other fluentd output plugins and add them. Enjoy!
 
