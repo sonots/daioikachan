@@ -18,7 +18,6 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "fluentd", "~> 0.12.0"
   gem.add_dependency "dotenv"
-  # gem.add_dependency "fluent-plugin-daioikachan"
   gem.add_dependency "puma"
   # gem.add_dependency "fluent-plugin-irc"
   gem.add_dependency "irc_parser"

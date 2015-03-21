@@ -73,7 +73,7 @@ See [config-file](http://docs.fluentd.org/articles/config-file) documentation of
 
 See following pages for built-in plugins.
 
-* [fluent-pluign-daioikachan](./README/in_daioikachan.md)
+* [in_daioikachan](./README/in_daioikachan.md)
 * [fluent-plugin-irc](./README/out_irc.md)
 * [fluent-plugin-slack](./README/out_slack.md)
 

@@ -4,7 +4,7 @@ This plugin provides [ikachan](https://github.com/yappo/p5-App-Ikachan) compatib
 
 ## Installation
 
-Bundled in `daioikachan` gem.
+Bundled with `daioikachan` gem.
 
 ## Configuration
 
