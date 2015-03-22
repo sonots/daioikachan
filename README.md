@@ -75,7 +75,7 @@ See following pages for built-in plugins.
 
 * [in_daioikachan](./README/in_daioikachan.md)
 * [fluent-plugin-irc](./README/out_irc.md)
-* [fluent-plugin-slack](./README/out_slack.md)
+* [fluent-plugin-slack](https://github.com/sowawa/fluent-plugin-slack)
 
 If you need other backends, search other fluentd output plugins and add them. Enjoy!
 

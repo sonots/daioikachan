@@ -21,6 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "puma"
   # gem.add_dependency "fluent-plugin-irc"
   gem.add_dependency "irc_parser"
-  # gem.add_dependency "fluent-plugin-slack"
+  gem.add_dependency "fluent-plugin-slack", ">= 0.5.0"
   gem.add_development_dependency "rake"
 end
