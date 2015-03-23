@@ -232,11 +232,14 @@ module Fluent
       end
 
       def on_read(data)
+        err_nick_name_in_use = nil
         data.each_line do |line|
           begin
             msg = IRCParser.parse(line)
             log.debug { "out_irc: on_read :#{msg.class.to_sym}" }
             case msg.class.to_sym
+            when :rpl_welcome
+              log.info { "out_irc: welcome \"#{msg.nick}\" to \"#{msg.prefix}\"" }
             when :ping
               IRCParser.message(:pong) do |m|
                 m.target = msg.target
@@ -247,13 +250,19 @@ module Fluent
               log.info { "out_irc: joined to #{msg.channels.join(', ')}" }
               msg.channels.each {|channel| @joined[channel] = true }
             when :err_nick_name_in_use
-              log.warn "out_irc: nickname \"#{msg.error_nick}\" is already in use."
+              log.warn "out_irc: nickname \"#{msg.error_nick}\" is already in use. use \"#{msg.error_nick}_\" instead."
+              err_nick_name_in_use = true
+              @nick = "#{msg.error_nick}_"
             when :error
               log.warn "out_irc: an error occured. \"#{msg.error_message}\""
             end
           rescue
             #TODO
           end
+        end
+
+        if err_nick_name_in_use
+          self.on_connect
         end
       end
 
