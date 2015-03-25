@@ -1,3 +1,9 @@
+# 0.0.3 (2015/03/25)
+
+Changes:
+
+* fluent-plugin-irc v0.0.7 has been released. Use it.
+
 # 0.0.2 (2015/03/23)
 
 Enhancements:
