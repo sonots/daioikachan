@@ -1,3 +1,9 @@
+# 0.0.4 (2015/03/30)
+
+Enhancements:
+
+* Support `multipart/form-data` as ikachan does
+
 # 0.0.3 (2015/03/25)
 
 Changes:
