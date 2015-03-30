@@ -46,6 +46,7 @@ module Fluent
     end
 
     def on_request(env)
+      log.debug { "in_daioikachan: #{env.to_s}" }
       @app.run(env)
     end
 
@@ -73,8 +74,13 @@ module Fluent
         # req = Rack::Request.new(env)
         method = env['REQUEST_METHOD'.freeze] # req.method
         path   = URI.parse(env['REQUEST_URI'.freeze]).path # req.path
-        body   = env['rack.input'].read # req.body.read
-        params = Rack::Utils.parse_query(body)
+        # Rack::Request.new should take care of this, but it did not
+        if env['CONTENT_TYPE'.freeze].start_with?('multipart/form-data'.freeze)
+          params = Rack::Multipart.parse_multipart(env)
+        else
+          body   = env['rack.input'].read # req.body.read
+          params = Rack::Utils.parse_query(body)
+        end
 
         begin
           if method == 'POST'
