@@ -1,3 +1,5 @@
+require 'string/scrub' if RUBY_VERSION.to_f < 2.1
+
 module Fluent
   class StringIrcSlackFilter < Filter
     Plugin.register_filter('string_irc_slack', self)
@@ -24,10 +26,21 @@ module Fluent
 
     def filter(tag, time, record)
       if message = record['message']
-        filtered_message = message.gsub(@start_code, '`').gsub(@stop_code, '`')
+        filtered_message = with_scrub(message) {|str| str.gsub(@start_code, '`').gsub(@stop_code, '`') }
         record = record.dup.tap {|r| r['message'] = filtered_message }
       end
       record
+    end
+
+    def with_scrub(string)
+      begin
+        return yield(string)
+      rescue ArgumentError => e
+        raise e unless e.message.index("invalid byte sequence in") == 0
+        log.info "filter_string_irc_slack: invalid byte sequence is replaced in #{string}"
+        string.scrub!('?')
+        retry
+      end
     end
   end
 end

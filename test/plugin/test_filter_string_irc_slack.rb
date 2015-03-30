@@ -39,4 +39,11 @@ class StringIrcSlackFilterTest < Test::Unit::TestCase
     filtered = filter('', msgs)
     assert_equal([{"message" => "`hello` `world`"}], filtered)
   end
+
+  def test_invalid_byte_sequence
+    invalid_string = "\xff".force_encoding('UTF-8')
+    msgs = [{"message" => invalid_string}]
+    filtered = filter('', msgs)
+    assert_equal([{"message" => "?"}], filtered)
+  end
 end
