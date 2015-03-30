@@ -71,20 +71,11 @@ module Fluent
       end
 
       def run(env)
-        # req = Rack::Request.new(env)
-        method = env['REQUEST_METHOD'.freeze] # req.method
-        path   = URI.parse(env['REQUEST_URI'.freeze]).path # req.path
-        # Rack::Request.new should take care of this, but it did not
-        if env['CONTENT_TYPE'.freeze].start_with?('multipart/form-data'.freeze)
-          params = Rack::Multipart.parse_multipart(env)
-        else
-          body   = env['rack.input'].read # req.body.read
-          params = Rack::Utils.parse_query(body)
-        end
-
+        req = Rack::Request.new(env)
         begin
-          if method == 'POST'
-            case path
+          if req.post?
+            params = req.params
+            case req.path
             when '/notice'
               notice(params)
             when '/privmsg'

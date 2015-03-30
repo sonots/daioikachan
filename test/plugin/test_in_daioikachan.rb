@@ -137,7 +137,6 @@ class DaioikachanInputTest < Test::Unit::TestCase
     d.run do
       d.expected_emits.each {|tag, time, record|
         res = post_multipart("/privmsg", {command: "privmsg", channel: "channel", message: "message"})
-        puts res.body
         assert_equal "200", res.code
       }
     end
