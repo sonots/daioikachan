@@ -1,3 +1,9 @@
+# 0.0.5 (2015/03/30)
+
+Changes:
+
+* Use Rack::Request to handle both `application/x-www-form-urlencoded` and `multipart/form-data`.
+
 # 0.0.4 (2015/03/30)
 
 Enhancements:
