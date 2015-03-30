@@ -18,6 +18,28 @@ class DaioikachanInputTest < Test::Unit::TestCase
     http.request(req)
   end
 
+  def post_multipart(path, params, header = {}, ssl = false)
+    http = Net::HTTP.new("127.0.0.1", PORT)
+    if ssl
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+    req = Net::HTTP::Post.new(path, header)
+    req.set_content_type("multipart/form-data; boundary=myboundary")
+
+    body = ""
+    params.each do |key, val|
+      body.concat("--myboundary\r\n")
+      body.concat("content-disposition: form-data; name=\"#{key}\";\r\n")
+      body.concat("\r\n")
+      body.concat("#{val}\r\n")
+    end
+    body.concat("--myboundary--\r\n")
+    req.body = body
+
+    http.request(req)
+  end
+
   def setup
     Fluent::Test.setup
   end
@@ -100,6 +122,24 @@ class DaioikachanInputTest < Test::Unit::TestCase
     d.run do
       res = post("/leave", {})
       assert_equal "200", res.code
+    end
+  end
+
+
+  def test_multipart
+    d = create_driver
+
+    time = Time.parse("2011-01-02 13:14:15 UTC").to_i
+    Fluent::Engine.now = time
+
+    d.expect_emit "privmsg.channel", time, {"command" => "privmsg", "channel" => "channel", "message" => "message"}
+
+    d.run do
+      d.expected_emits.each {|tag, time, record|
+        res = post_multipart("/privmsg", {command: "privmsg", channel: "channel", message: "message"})
+        puts res.body
+        assert_equal "200", res.code
+      }
     end
   end
 end
