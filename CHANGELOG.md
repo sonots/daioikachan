@@ -1,3 +1,10 @@
+# 0.0.6 (2015/03/31)
+
+Enhancements
+
+* Add `filter_string_irc_slack`
+* log.error InternalServerError
+
 # 0.0.5 (2015/03/30)
 
 Changes:
