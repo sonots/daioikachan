@@ -60,8 +60,6 @@ module Fluent
 
     class App
       class BadRequest < StandardError; end
-      class InternalServerError < StandardError; end
-      class NotFound < StandardError; end
 
       attr_reader :router, :log
 
@@ -92,12 +90,10 @@ module Fluent
           end
         rescue BadRequest => e
           bad_request(e.message)
-        rescue NotFound => e
-          not_found(e.message)
-        rescue InternalServerError => e
-          internal_server_error(e.message)
         rescue => e
-          internal_server_error("#{e.class} #{e.message} #{e.backtrace.first}")
+          log.error "out_slack:", :error => e.to_s, :error_class => e.class.to_s
+          log.warn_backtrace e.backtrace
+          internal_server_error
         else
           ok
         end
