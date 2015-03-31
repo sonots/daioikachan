@@ -21,9 +21,11 @@ Gem::Specification.new do |gem|
   gem.add_dependency "puma"
   gem.add_dependency "fluent-plugin-irc", ">= 0.0.7"
   gem.add_dependency "fluent-plugin-slack", ">= 0.5.0"
+  gem.add_dependency "string-scrub" if RUBY_VERSION.to_f < 2.1
 
   gem.add_development_dependency "rake"
   gem.add_development_dependency "test-unit"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-nav"
+  gem.add_development_dependency "string-irc"
 end
