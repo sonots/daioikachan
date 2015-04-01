@@ -11,7 +11,7 @@ module Fluent
     CLEAR      = "\x0f" # \u000F
 
     def configure(conf)
-      @start_code = Regexp.new("(#{COLOR_CODE}[0-9][0-9](,[0-9][0-9])?|#{BOLD}|#{UNDERLINE}|#{INVERSE})+")
+      @start_code = Regexp.new("(#{COLOR_CODE}[0-9]?[0-9](,[0-9]?[0-9])?|#{BOLD}|#{UNDERLINE}|#{INVERSE})+")
       @stop_code  = Regexp.new(CLEAR)
       super
     end
