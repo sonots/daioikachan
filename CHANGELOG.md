@@ -1,3 +1,9 @@
+# 0.0.7 (2015/04/02)
+
+Fixes:
+
+* filter_string_irc_slack: fix color code replacement
+
 # 0.0.6 (2015/03/31)
 
 Enhancements
