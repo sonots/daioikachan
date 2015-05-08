@@ -1,6 +1,6 @@
 module Fluent
-  class StringSlackQuoteFilter < Filter
-    Plugin.register_filter('string_slack_quote', self)
+  class SlackQuoteFilter < Filter
+    Plugin.register_filter('slack_quote', self)
 
     def configure(conf)
       super
