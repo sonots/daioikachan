@@ -1,3 +1,9 @@
+# 0.0.8 (2015/05/08)
+
+Enhancements
+
+* Add `filter_slack_quote`
+
 # 0.0.7 (2015/04/02)
 
 Fixes:
