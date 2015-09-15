@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "fluentd", "~> 0.12.0"
   gem.add_dependency "dotenv"
+  gem.add_dependency "rack"
   gem.add_dependency "puma"
   gem.add_dependency "fluent-plugin-irc", ">= 0.0.7"
   gem.add_dependency "fluent-plugin-slack", ">= 0.5.0"
