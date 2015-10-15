@@ -5,6 +5,7 @@ module Fluent
     def initialize
       require 'puma'
       require 'uri'
+      require 'rack'
       super
     end
 
@@ -58,7 +59,6 @@ module Fluent
       @server.add_tcp_listener(*opts)
     end
 
-    require 'rack'
     class App
       class BadRequest < StandardError; end
 
