@@ -1,3 +1,9 @@
+# 0.0.9 (2015/10/15)
+
+Fixes
+
+* require `rack` (thanks to maroekun)
+
 # 0.0.8 (2015/05/08)
 
 Enhancements
