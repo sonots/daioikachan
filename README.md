@@ -63,13 +63,10 @@ Look whether posting to IRC, and Slack succeeds.
 
 ## Configuration
 
-See [example.conf](./example.conf) or [multi_slack.conf](./examples/multi_slack.conf) as examples.
+See [example.conf](./examples/example.conf) or [multi_slack.conf](./examples/multi_slack.conf) as examples.
 
-You might've noticed that the config file is similar with Fluentd.
-Yes, `daioikachan` is created based on Fluentd.
-So, you can use `routing` functions which Fluentd has (`tag` and `label`).
-
-See [config-file](http://docs.fluentd.org/articles/config-file) documentation of Fluentd for details.
+`daioikachan` is created based on `Fluentd`.  So, you can use `routing` features which Fluentd has, such as `tag` and `label`.
+See [fluentd.org:config-file](http://docs.fluentd.org/articles/config-file) documentation of Fluentd for details.
 
 See following pages for built-in plugins.
 
@@ -95,12 +92,24 @@ Send `notice` message.
 $ curl -d "channel=#channel&message=test message" http://localhost:4979/notice
 ```
 
+`in_daioikachan` emits a messages as:
+
+```
+notice.channel {"command":"notice","channel":"channel","message":"test message"}
+```
+
 ### /privmsg
 
 Send `privmsg` message.
 
 ```
 $ curl -d "channel=#channel&message=test message" http://localhost:4979/privmsg
+```
+
+`in_daioikachan` emits a messages as:
+
+```
+privmsg.channel {"command":"privmsg","channel":"channel","message":"test message"}
 ```
 
 ### /join
